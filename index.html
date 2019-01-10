@@ -272,7 +272,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/09/Python生产者消费者模型-Day38/">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2019/01/10/协程应用举例-Day42/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="渝周郎">
@@ -291,7 +291,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/12/09/Python生产者消费者模型-Day38/" itemprop="url">Python生产者消费者模型-Day38</a></h1>
+                <a class="post-title-link" href="/2019/01/10/协程应用举例-Day42/" itemprop="url">协程应用举例-Day42</a></h1>
         
 
         <div class="post-meta">
@@ -303,8 +303,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-09T12:02:02+08:00">
-                2018-12-09
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T21:55:02+08:00">
+                2019-01-10
               </time>
             
 
@@ -357,7 +357,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  397
+                  113
                 </span>
               
 
@@ -396,392 +396,14 @@
       
         
           
-            <h2 id="Python生产者与消费者模型-Day38"><a href="#Python生产者与消费者模型-Day38" class="headerlink" title="Python生产者与消费者模型-Day38"></a>Python生产者与消费者模型-Day38</h2><blockquote>
-<p>multiprocess模块中的<code>JoinableQueue</code>类常用方式：</p>
-<ol>
-<li>task_done()   常和get方法搭配使用</li>
-<li>join  常和put方法搭配使用</li>
-</ol>
-</blockquote>
-<h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process, JoinableQueue</span><br><span class="line"><span class="keyword">import</span> time, random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sc</span><span class="params">(name, food, q)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        time.sleep(random.randint(<span class="number">3</span>,<span class="number">5</span>))</span><br><span class="line">        print(<span class="string">'%s生产了%s%d'</span>%(name, food,i))</span><br><span class="line">        q.put(<span class="string">'%s生产了%s%d'</span>%(name, food,i))</span><br><span class="line">    q.join()            <span class="comment"># q.join  常和put搭配使用</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">xf</span><span class="params">(name, q)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        food = q.get()</span><br><span class="line">        print(<span class="string">'\033[31m%s消费了→%s\033[0m'</span>%(name, food))</span><br><span class="line">        time.sleep(random.randint(<span class="number">1</span>,<span class="number">3</span>))</span><br><span class="line">        q.task_done()       <span class="comment"># q.task_done() 常和get搭配使用</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    q = JoinableQueue(<span class="number">10</span>)</span><br><span class="line">    psc1 = Process(target=sc, args=(<span class="string">'王近'</span>, <span class="string">'包子'</span>, q))</span><br><span class="line">    psc2 = Process(target=sc, args=(<span class="string">'李武'</span>, <span class="string">'油条'</span>, q))</span><br><span class="line">    pxf1 = Process(target=xf, args=(<span class="string">'五杀'</span>, q))</span><br><span class="line">    pxf2 = Process(target=xf, args=(<span class="string">'好评'</span>, q))</span><br><span class="line">    psc1.start()</span><br><span class="line">    psc2.start()</span><br><span class="line">    pxf1.daemon=<span class="keyword">True</span>    <span class="comment"># 设置为守护进程，当主线程的代码执行完毕时，子线程自动结束</span></span><br><span class="line">    pxf2.daemon=<span class="keyword">True</span></span><br><span class="line">    pxf1.start()</span><br><span class="line">    pxf2.start()</span><br><span class="line">    psc1.join()     <span class="comment"># 感知一个进程的结束</span></span><br><span class="line">    psc2.join()</span><br></pre></td></tr></table></figure>
-<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">王近生产了包子0</span><br><span class="line">好评消费了→王近生产了包子0</span><br><span class="line">李武生产了油条0</span><br><span class="line">五杀消费了→李武生产了油条0</span><br><span class="line">王近生产了包子1</span><br><span class="line">好评消费了→王近生产了包子1</span><br><span class="line">李武生产了油条1</span><br><span class="line">五杀消费了→李武生产了油条1</span><br><span class="line">王近生产了包子2</span><br><span class="line">好评消费了→王近生产了包子2</span><br><span class="line">李武生产了油条2</span><br><span class="line">五杀消费了→李武生产了油条2</span><br><span class="line">王近生产了包子3</span><br><span class="line">好评消费了→王近生产了包子3</span><br><span class="line">李武生产了油条3</span><br><span class="line">五杀消费了→李武生产了油条3</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/07/Python多线程之队列/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="渝周郎">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渝周砺行路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/07/Python多线程之队列/" itemprop="url">Python多线程之队列</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-07T21:54:15+08:00">
-                2018-12-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程/" itemprop="url" rel="index">
-                    <span itemprop="name">编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  119
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Day38-Python多线程之队列"><a href="#Day38-Python多线程之队列" class="headerlink" title="Day38 Python多线程之队列"></a>Day38 Python多线程之队列</h2><blockquote>
-<p>multiprocessing模块中的Queue类有如下方法</p>
-<ol>
-<li>.put()    在队列池中加入一个进程</li>
-<li>.full()    查看队列池是否已满？如果已满，就阻塞</li>
-<li>get()        在队列池中取出一个进程</li>
-<li>.empty()    查看队列池是否为空？如果为空，就阻塞<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process, Queue</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shengchan</span><span class="params">(q)</span>:</span></span><br><span class="line">    q.put(<span class="string">'产生一个数据'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">xiaohao</span><span class="params">(q)</span>:</span></span><br><span class="line">    print(q.get())</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    q = Queue()   </span><br><span class="line">    p = Process(target=shengchan, args=(q,))</span><br><span class="line">    p.start()</span><br><span class="line">    x = Process(target=xiaohao, args=(q,))</span><br><span class="line">    x.start()</span><br></pre></td></tr></table></figure></li>
-</ol>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/09/23/清理及变更存储位置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="渝周郎">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渝周砺行路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/23/清理及变更存储位置/" itemprop="url">MSSQL Errlog清理及变更存储位置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-23T21:31:25+08:00">
-                2018-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/编程/" itemprop="url" rel="index">
-                    <span itemprop="name">编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  231
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>一次整理MSSQL数据库时发现<code>Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\MSSQL\Log</code>目录下面错误日志文件很大，特对目录下的错误日志文件进行瘦身操作，整个流程如下：<br>由于默认情况下，SQL Server 保存 7 个 ErrorLog 文件，名为：</p>
-<ul>
-<li>ErrorLog<ul>
-<li>ErrorLog.1</li>
-<li>ErrorLog.2</li>
-<li>ErrorLog.3</li>
-<li>ErrorLog.4</li>
-<li>ErrorLog.5</li>
-<li>ErrorLog.6</li>
-</ul>
-<ol>
-<li>下面开始操作清除错误日志文件存档 （循环执行6次，请清除6个日志文件）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; EXEC sp_cycle_errorlog</span><br><span class="line">&gt; GO</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-</ul>
-</blockquote>
+            <h2 id="协程应用举例-Day42"><a href="#协程应用举例-Day42" class="headerlink" title="协程应用举例-Day42"></a>协程应用举例-Day42</h2><h4 id="1-爬虫"><a href="#1-爬虫" class="headerlink" title="1. 爬虫"></a>1. 爬虫</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2019/1/10 21:55</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey;monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlopen</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_url</span><span class="params">(url)</span>:</span></span><br><span class="line">	response = urlopen(url)</span><br><span class="line">	context = response.read().decode(<span class="string">'utf-8'</span>)</span><br><span class="line">	<span class="keyword">return</span> url, len(context)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">urls = [<span class="string">'http://www.baidu.com'</span>, </span><br><span class="line">		<span class="string">'http://www.sohu.com'</span>, </span><br><span class="line">		<span class="string">'http://www.cnblogs.com'</span>, </span><br><span class="line">		<span class="string">'http://www.360.cn'</span>, </span><br><span class="line">		<span class="string">'http://139139.cn'</span></span><br><span class="line">		]</span><br><span class="line">g_lst = []</span><br><span class="line"><span class="keyword">for</span> url <span class="keyword">in</span> urls:</span><br><span class="line">	g = gevent.spawn(get_url, url)</span><br><span class="line">	g_lst.append(g)</span><br><span class="line"><span class="keyword">for</span> gg <span class="keyword">in</span> g_lst:</span><br><span class="line">	gg.join()</span><br><span class="line">	print(gg.value)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<ol start="2">
-<li>修改Errlog的存放位置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; 打开 Sql Server 配置管理器 --&gt; Sql Server 服务 --&gt; Sql Server (MSSQLSERVER) --&gt; 属性 --&gt; 高级</span><br><span class="line">&gt; 修改“转储目录”，将文件夹修改为新的路径</span><br><span class="line">&gt; 修改“启动参数”，将-e后的文件夹修改为新的路径</span><br><span class="line">&gt; 然后从新启动 Sql Server (MSSQLSERVER) ，再次执行方法一得指令，发现 ERRORLOG 文件就在新的文件夹内产生了</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2019/01/10/协程应用举例-Day42/201901102221.gif" alt="协程应用举例-Day42"></p>
 </blockquote>
+<h4 id="2-通过gevent实现单线程下的socket并发"><a href="#2-通过gevent实现单线程下的socket并发" class="headerlink" title="2. 通过gevent实现单线程下的socket并发"></a>2. 通过gevent实现单线程下的socket并发</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<h4 id="运行结果如下-1"><a href="#运行结果如下-1" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4></blockquote>
+<p><img src="/2019/01/10/协程应用举例-Day42/201901102129.gif" alt="协程应用举例-Day42"></p>
 
           
         
@@ -830,7 +452,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/09/19/Python关键词整理/">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2019/01/10/协程之gevent模块-Day42/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="渝周郎">
@@ -849,7 +471,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/19/Python关键词整理/" itemprop="url">Python关键词整理</a></h1>
+                <a class="post-title-link" href="/2019/01/10/协程之gevent模块-Day42/" itemprop="url">协程之gevent模块-Day42</a></h1>
         
 
         <div class="post-meta">
@@ -861,8 +483,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-19T21:18:16+08:00">
-                2018-09-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-10T21:08:02+08:00">
+                2019-01-10
               </time>
             
 
@@ -915,7 +537,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k
+                  478
                 </span>
               
 
@@ -931,7 +553,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7
+                  2
                 </span>
               
             </div>
@@ -954,1127 +576,15 @@
       
         
           
-            <table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>statements</strong></th>
-<th style="text-align:left">语句</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">print()</td>
-<td style="text-align:left">输出</td>
-</tr>
-<tr>
-<td style="text-align:center">quit()</td>
-<td style="text-align:left">退出</td>
-</tr>
-<tr>
-<td style="text-align:center">exit()</td>
-<td style="text-align:left">退出</td>
-</tr>
-<tr>
-<td style="text-align:center">ctrl+d</td>
-<td style="text-align:left"><strong>(输入文件结束符)结束输入并退出</strong></td>
-</tr>
-<tr>
-<td style="text-align:center">int</td>
-<td style="text-align:left">整型数</td>
-</tr>
-<tr>
-<td style="text-align:center">float</td>
-<td style="text-align:left">浮点型数</td>
-</tr>
-<tr>
-<td style="text-align:center">complex</td>
-<td style="text-align:left">复数</td>
-</tr>
-<tr>
-<td style="text-align:center">bool</td>
-<td style="text-align:left">布尔</td>
-</tr>
-<tr>
-<td style="text-align:center">True</td>
-<td style="text-align:left">真</td>
-</tr>
-<tr>
-<td style="text-align:center">False</td>
-<td style="text-align:left">假</td>
-</tr>
-<tr>
-<td style="text-align:center">str</td>
-<td style="text-align:left">字符串</td>
-</tr>
-<tr>
-<td style="text-align:center">list</td>
-<td style="text-align:left">列表</td>
-</tr>
-<tr>
-<td style="text-align:center">None</td>
-<td style="text-align:left">空值</td>
-</tr>
-<tr>
-<td style="text-align:center">expression</td>
-<td style="text-align:left">表达式</td>
-</tr>
-<tr>
-<td style="text-align:center">del</td>
-<td style="text-align:left">删除</td>
-</tr>
-<tr>
-<td style="text-align:center">help()</td>
-<td style="text-align:left">帮助</td>
-</tr>
-<tr>
-<td style="text-align:center">is</td>
-<td style="text-align:left">是</td>
-</tr>
-<tr>
-<td style="text-align:center">not is</td>
-<td style="text-align:left">不是</td>
-</tr>
-<tr>
-<td style="text-align:center">id()</td>
-<td style="text-align:left">查询内存地址</td>
-</tr>
-<tr>
-<td style="text-align:center">-5~256</td>
-<td style="text-align:left">小整数池</td>
-</tr>
-<tr>
-<td style="text-align:center">refrence count</td>
-<td style="text-align:left">引用计数</td>
-</tr>
-<tr>
-<td style="text-align:center">abs</td>
-<td style="text-align:left">取绝对值</td>
-</tr>
-<tr>
-<td style="text-align:center">round</td>
-<td style="text-align:left">四舍五入</td>
-</tr>
-<tr>
-<td style="text-align:center">pow</td>
-<td style="text-align:left">幂运算</td>
-</tr>
-<tr>
-<td style="text-align:center">input()</td>
-<td style="text-align:left">输入</td>
-</tr>
-<tr>
-<td style="text-align:center">sep</td>
-<td style="text-align:left">两值之间分隔符</td>
-</tr>
-<tr>
-<td style="text-align:center">end</td>
-<td style="text-align:left">结束（内容）</td>
-</tr>
-<tr>
-<td style="text-align:center">if</td>
-<td style="text-align:left">如果</td>
-</tr>
-<tr>
-<td style="text-align:center">elif</td>
-<td style="text-align:left">否则如果</td>
-</tr>
-<tr>
-<td style="text-align:center">else</td>
-<td style="text-align:left">否则</td>
-</tr>
-<tr>
-<td style="text-align:center">pass</td>
-<td style="text-align:left">过</td>
-</tr>
-<tr>
-<td style="text-align:center">not</td>
-<td style="text-align:left">布尔 非</td>
-</tr>
-<tr>
-<td style="text-align:center">and</td>
-<td style="text-align:left">布尔 与</td>
-</tr>
-<tr>
-<td style="text-align:center">or</td>
-<td style="text-align:left">布尔 或</td>
-</tr>
-<tr>
-<td style="text-align:center">man ascii</td>
-<td style="text-align:left">终端查询命令</td>
-</tr>
-<tr>
-<td style="text-align:center">ascii</td>
-<td style="text-align:left">编码表</td>
-</tr>
-<tr>
-<td style="text-align:center">Unicode</td>
-<td style="text-align:left">统一编码表</td>
-</tr>
-<tr>
-<td style="text-align:center">Unicode16</td>
-<td style="text-align:left">16位</td>
-</tr>
-<tr>
-<td style="text-align:center">Unicode32</td>
-<td style="text-align:left">32位</td>
-</tr>
-<tr>
-<td style="text-align:center">len(x)</td>
-<td style="text-align:left">返回个数</td>
-</tr>
-<tr>
-<td style="text-align:center">raw</td>
-<td style="text-align:left">原始字符串(r”hello”)</td>
-</tr>
-<tr>
-<td style="text-align:center">in</td>
-<td style="text-align:left">是否出现过</td>
-</tr>
-<tr>
-<td style="text-align:center">not in</td>
-<td style="text-align:left">没有出现</td>
-</tr>
-<tr>
-<td style="text-align:center">index</td>
-<td style="text-align:left">索引([])</td>
-</tr>
-<tr>
-<td style="text-align:center">slice</td>
-<td style="text-align:left">切片([::])</td>
-</tr>
-<tr>
-<td style="text-align:center">bin()</td>
-<td style="text-align:left">整数转二进制</td>
-</tr>
-<tr>
-<td style="text-align:center">oct()</td>
-<td style="text-align:left">整数转八进制</td>
-</tr>
-<tr>
-<td style="text-align:center">hex()</td>
-<td style="text-align:left">整数转十六进制</td>
-</tr>
-<tr>
-<td style="text-align:center">max()</td>
-<td style="text-align:left">求最大值</td>
-</tr>
-<tr>
-<td style="text-align:center">min()</td>
-<td style="text-align:left">最小值</td>
-</tr>
-<tr>
-<td style="text-align:center">ord()</td>
-<td style="text-align:left">字符对应（转）数字</td>
-</tr>
-<tr>
-<td style="text-align:center">chr()</td>
-<td style="text-align:left">数字对应（转）字符</td>
-</tr>
-<tr>
-<td style="text-align:center">while</td>
-<td style="text-align:left">循环</td>
-</tr>
-<tr>
-<td style="text-align:center">for</td>
-<td style="text-align:left">循环（遍历）</td>
-</tr>
-<tr>
-<td style="text-align:center">break</td>
-<td style="text-align:left">跳出循环</td>
-</tr>
-<tr>
-<td style="text-align:center">list</td>
-<td style="text-align:left">列表</td>
-</tr>
-<tr>
-<td style="text-align:center">tuple</td>
-<td style="text-align:left">元组</td>
-</tr>
-<tr>
-<td style="text-align:center">dict</td>
-<td style="text-align:left">字典</td>
-</tr>
-<tr>
-<td style="text-align:center">range</td>
-<td style="text-align:left">整数序列生成器</td>
-</tr>
-<tr>
-<td style="text-align:center">step</td>
-<td style="text-align:left">步长</td>
-</tr>
-<tr>
-<td style="text-align:center">continue</td>
-<td style="text-align:left">跳过循环</td>
-</tr>
-<tr>
-<td style="text-align:center">iterable</td>
-<td style="text-align:left">可迭代对象</td>
-</tr>
-<tr>
-<td style="text-align:center">sum()</td>
-<td style="text-align:left">求和</td>
-</tr>
-<tr>
-<td style="text-align:center">any()</td>
-<td style="text-align:left">一个为真则为真</td>
-</tr>
-<tr>
-<td style="text-align:center">all()</td>
-<td style="text-align:left">所有真为真</td>
-</tr>
-<tr>
-<td style="text-align:center">s.split(sep)</td>
-<td style="text-align:left">sep:分隔符（分隔字符串返回列表）</td>
-</tr>
-<tr>
-<td style="text-align:center">‘#’.join()</td>
-<td style="text-align:left">[1,2,3]返回”1#2#3”</td>
-</tr>
-<tr>
-<td style="text-align:center">copy(shallow copy)</td>
-<td style="text-align:left">浅拷贝</td>
-</tr>
-<tr>
-<td style="text-align:center">deepcopy</td>
-<td style="text-align:left">深拷贝</td>
-</tr>
-<tr>
-<td style="text-align:center">reversed</td>
-<td style="text-align:left">顺序翻转</td>
-</tr>
-<tr>
-<td style="text-align:center">sorted()</td>
-<td style="text-align:left">排序序列</td>
-</tr>
-<tr>
-<td style="text-align:center">key</td>
-<td style="text-align:left">键</td>
-</tr>
-<tr>
-<td style="text-align:center">value</td>
-<td style="text-align:left">值</td>
-</tr>
-<tr>
-<td style="text-align:center">set</td>
-<td style="text-align:left">集合</td>
-</tr>
-<tr>
-<td style="text-align:center">frozenset</td>
-<td style="text-align:left">固定集合</td>
-</tr>
-<tr>
-<td style="text-align:center">byte</td>
-<td style="text-align:left">字节（0~255）</td>
-</tr>
-<tr>
-<td style="text-align:center">bytes()</td>
-<td style="text-align:left">字节串</td>
-</tr>
-<tr>
-<td style="text-align:center">bytearray()</td>
-<td style="text-align:left">字节数组</td>
-</tr>
-<tr>
-<td style="text-align:center">def (function)</td>
-<td style="text-align:left">函数</td>
-</tr>
-<tr>
-<td style="text-align:center">return</td>
-<td style="text-align:left">返回</td>
-</tr>
-<tr>
-<td style="text-align:center">args</td>
-<td style="text-align:left">参数</td>
-</tr>
-<tr>
-<td style="text-align:center">args=None</td>
-<td style="text-align:left">缺省参数</td>
-</tr>
-<tr>
-<td style="text-align:center">*args</td>
-<td style="text-align:left">元组传参</td>
-</tr>
-<tr>
-<td style="text-align:center">**kwargs</td>
-<td style="text-align:left">字典传参</td>
-</tr>
-<tr>
-<td style="text-align:center">local variable</td>
-<td style="text-align:left">局部变量</td>
-</tr>
-<tr>
-<td style="text-align:center">global variable</td>
-<td style="text-align:left">全局变量</td>
-</tr>
-<tr>
-<td style="text-align:center">globals()</td>
-<td style="text-align:left">返回全局变量字典</td>
-</tr>
-<tr>
-<td style="text-align:center">locals()</td>
-<td style="text-align:left">返回局部变量字典</td>
-</tr>
-<tr>
-<td style="text-align:center">Local(function)</td>
-<td style="text-align:left">L  局部（作用域）</td>
-</tr>
-<tr>
-<td style="text-align:center">Enclosing function locals</td>
-<td style="text-align:left">E  外部嵌套</td>
-</tr>
-<tr>
-<td style="text-align:center">Global(module)</td>
-<td style="text-align:left">G  全局（模块）</td>
-</tr>
-<tr>
-<td style="text-align:center">Builtin(Python)</td>
-<td style="text-align:left">B  内建</td>
-</tr>
-<tr>
-<td style="text-align:center">global</td>
-<td style="text-align:left">声明全局变量</td>
-</tr>
-<tr>
-<td style="text-align:center">nonlocal</td>
-<td style="text-align:left">声明外部嵌套</td>
-</tr>
-<tr>
-<td style="text-align:center">lambda</td>
-<td style="text-align:left">匿名函数（参数：返回结果）</td>
-</tr>
-<tr>
-<td style="text-align:center">eval()</td>
-<td style="text-align:left">字符串当表达式执行</td>
-</tr>
-<tr>
-<td style="text-align:center">exec()</td>
-<td style="text-align:left">字符串当程序执行</td>
-</tr>
-<tr>
-<td style="text-align:center">High Order Function</td>
-<td style="text-align:left">高阶函数</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">map()</th>
-<th>(函数，iterable)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">filter()</td>
-<td>(函数，iterable)</td>
-</tr>
-<tr>
-<td style="text-align:center">sorted()</td>
-<td>(iterable,key=函数，reverse=False)</td>
-</tr>
-<tr>
-<td style="text-align:center">recursion</td>
-<td>递归</td>
-</tr>
-<tr>
-<td style="text-align:center">closure</td>
-<td>闭包</td>
-</tr>
-<tr>
-<td style="text-align:center">Module</td>
-<td>模块</td>
-</tr>
-<tr>
-<td style="text-align:center">builtins</td>
-<td>内建模块</td>
-</tr>
-<tr>
-<td style="text-align:center">import Mouble</td>
-<td>导入模块</td>
-</tr>
-<tr>
-<td style="text-align:center">from Mouble import *</td>
-<td>导入模块内属性</td>
-</tr>
-<tr>
-<td style="text-align:center">dir()</td>
-<td>返回所有属性列表</td>
-</tr>
-<tr>
-<td style="text-align:center">math</td>
-<td>数学模块</td>
-</tr>
-<tr>
-<td style="text-align:center">time</td>
-<td>时间模块</td>
-</tr>
-<tr>
-<td style="text-align:center">random</td>
-<td>随机模块</td>
-</tr>
-<tr>
-<td style="text-align:center">sys系统</td>
-<td>模块（内建）</td>
-</tr>
-<tr>
-<td style="text-align:center">@Function</td>
-<td>装饰器函数</td>
-</tr>
-<tr>
-<td style="text-align:center">pip3 installtensorflow</td>
-<td>模块安装</td>
-</tr>
-<tr>
-<td style="text-align:center">sys.path</td>
-<td>路径列表</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__doc__</code></td>
-<td>文档字符串</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__file__</code></td>
-<td>路径名</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__name__</code></td>
-<td>模块自身名</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__all__</code></td>
-<td>可导出属性列表</td>
-</tr>
-<tr>
-<td style="text-align:center">package</td>
-<td>包</td>
-</tr>
-<tr>
-<td style="text-align:center">_name</td>
-<td>隐藏属性name</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__init__.py</code></td>
-<td>声明包文件</td>
-</tr>
-<tr>
-<td style="text-align:center">try-except</td>
-<td>接受处理异常</td>
-</tr>
-<tr>
-<td style="text-align:center">try-finally</td>
-<td>执行必要语句</td>
-</tr>
-<tr>
-<td style="text-align:center">try</td>
-<td>异常</td>
-</tr>
-<tr>
-<td style="text-align:center">as</td>
-<td>改名</td>
-</tr>
-<tr>
-<td style="text-align:center">except</td>
-<td>截取异常类型</td>
-</tr>
-<tr>
-<td style="text-align:center">else</td>
-<td>正常结束</td>
-</tr>
-<tr>
-<td style="text-align:center">finally</td>
-<td>强制执行</td>
-</tr>
-<tr>
-<td style="text-align:center">raise</td>
-<td>发送错误</td>
-</tr>
-<tr>
-<td style="text-align:center">assert</td>
-<td>限制条件发送    assert True–&gt;执行后续语句</td>
-</tr>
-<tr>
-<td style="text-align:center">Iterator</td>
-<td>迭代器</td>
-</tr>
-<tr>
-<td style="text-align:center">iter()</td>
-<td>可迭代对象生产迭代器</td>
-</tr>
-<tr>
-<td style="text-align:center">next()</td>
-<td>迭代器内顺序取值</td>
-</tr>
-<tr>
-<td style="text-align:center">Generator</td>
-<td>生成器</td>
-</tr>
-<tr>
-<td style="text-align:center">yield</td>
-<td>函数内表达式（生成器函数）</td>
-</tr>
-<tr>
-<td style="text-align:center">[x for x in range() if]</td>
-<td>生成器表达式</td>
-</tr>
-<tr>
-<td style="text-align:center">zip()</td>
-<td>两个或以上可迭代生成元组</td>
-</tr>
-<tr>
-<td style="text-align:center">enumerate()</td>
-<td>生成带索引对象 可定义开始下标</td>
-</tr>
-<tr>
-<td style="text-align:center">File</td>
-<td>文件</td>
-</tr>
-<tr>
-<td style="text-align:center">open()</td>
-<td>打开文件</td>
-</tr>
-<tr>
-<td style="text-align:center">File.close()</td>
-<td>关闭文件</td>
-</tr>
-<tr>
-<td style="text-align:center">gb2312</td>
-<td>6763汉子</td>
-</tr>
-<tr>
-<td style="text-align:center">gbk</td>
-<td>国标21003汉子</td>
-</tr>
-<tr>
-<td style="text-align:center">gb18030</td>
-<td>27533汉子</td>
-</tr>
-<tr>
-<td style="text-align:center">UTF-8</td>
-<td>Unicode</td>
-</tr>
-<tr>
-<td style="text-align:center">ASCII</td>
-<td>256字符</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>Ojbect-Oriented Programing</strong></th>
-<th>对象</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">class</td>
-<td>类</td>
-</tr>
-<tr>
-<td style="text-align:center">method</td>
-<td>实例</td>
-</tr>
-<tr>
-<td style="text-align:center">attribute</td>
-<td>实例属性（变量）</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__init__()</code></td>
-<td>初始化方法</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__del__()</code></td>
-<td>析构方法</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__dict__</code></td>
-<td>自身变量的字典</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__class__</code></td>
-<td>实例的类</td>
-</tr>
-<tr>
-<td style="text-align:center">type(obj)</td>
-<td>返回类型</td>
-</tr>
-<tr>
-<td style="text-align:center">isinstance()</td>
-<td>判断是否为某个类</td>
-</tr>
-<tr>
-<td style="text-align:center">self</td>
-<td>类方法必有的参数（自己）</td>
-</tr>
-<tr>
-<td style="text-align:center">object</td>
-<td>对象（类）</td>
-</tr>
-<tr>
-<td style="text-align:center">instance</td>
-<td>实例</td>
-</tr>
-<tr>
-<td style="text-align:center">@classmethod</td>
-<td>装饰为类的方法</td>
-</tr>
-<tr>
-<td style="text-align:center">@staticmethod</td>
-<td>静态方法（类内普通函数）</td>
-</tr>
-<tr>
-<td style="text-align:center">inheritance</td>
-<td>继承（单继承）</td>
-</tr>
-<tr>
-<td style="text-align:center">multiple inheritance</td>
-<td>多继承</td>
-</tr>
-<tr>
-<td style="text-align:center">derived</td>
-<td>派生</td>
-</tr>
-<tr>
-<td style="text-align:center">base class</td>
-<td>基类</td>
-</tr>
-<tr>
-<td style="text-align:center">super class</td>
-<td>超类</td>
-</tr>
-<tr>
-<td style="text-align:center">father class</td>
-<td>父类</td>
-</tr>
-<tr>
-<td style="text-align:center">derived class</td>
-<td>派生类</td>
-</tr>
-<tr>
-<td style="text-align:center">child class</td>
-<td>子类</td>
-</tr>
-<tr>
-<td style="text-align:center">override</td>
-<td>覆盖</td>
-</tr>
-<tr>
-<td style="text-align:center">super()</td>
-<td>调用父类覆盖方法</td>
-</tr>
-<tr>
-<td style="text-align:center">enclosure</td>
-<td>封装</td>
-</tr>
-<tr>
-<td style="text-align:center">__name</td>
-<td>私有属性name</td>
-</tr>
-<tr>
-<td style="text-align:center">polymorphic</td>
-<td>多态（静态/动态）</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__mro__</code></td>
-<td>类的方法查找顺序列表</td>
-</tr>
-<tr>
-<td style="text-align:center">repr(obj)</td>
-<td>返回表达式字符串</td>
-</tr>
-<tr>
-<td style="text-align:center">str(obj)</td>
-<td>返回字符串</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>内建函数重写</strong></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__repr__</code></td>
-<td>对象装字符串（表达式字符串）</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__str__</code></td>
-<td>函数重写（字符串）</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__abs__</code></td>
-<td>绝对值</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__len__</code></td>
-<td>序列长度，必须返回整数</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__reversed__</code></td>
-<td>排序，必须返回可迭代对象</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__round__</code></td>
-<td>四舍五入函数</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>数值转换函数重写</strong></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__complex__</code></td>
-<td>复数函数</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__int__</code></td>
-<td>整数函数</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__float__</code></td>
-<td>浮点数函数</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__bool__</code></td>
-<td>布尔函数（特殊）</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__next__</code></td>
-<td>迭代器</td>
-</tr>
-<tr>
-<td style="text-align:center">getattr(obj,”name”[default])</td>
-<td>name为字符串</td>
-</tr>
-<tr>
-<td style="text-align:center">hasattr(obj,”name”)</td>
-<td>判断有没有name属性</td>
-</tr>
-<tr>
-<td style="text-align:center">setattr(obj,”name”,value)</td>
-<td>name赋值为value</td>
-</tr>
-<tr>
-<td style="text-align:center">delattr(obj,”name”)</td>
-<td>删除name属性</td>
-</tr>
-<tr>
-<td style="text-align:center">with</td>
-<td>异常发时自动管理</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__enter__</code></td>
-<td>with开始自动调用</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__exit__</code></td>
-<td>with调用 判断是否异常</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__eixt__(self,exc_type,exc_val,exc_tb)</code></td>
-<td>exc_type 错误类型 exc_val 错误值 exc_tb 追踪</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>运算符重载方法名</th>
-<th style="text-align:center">运算符和表达式</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>__add__(self,rhs)</code></td>
-<td style="text-align:center">self+rhs</td>
-<td>加法</td>
-</tr>
-<tr>
-<td><code>__sub__(self,rhs)</code></td>
-<td style="text-align:center">self-rhs</td>
-<td>减法</td>
-</tr>
-<tr>
-<td><code>__mul__(self,rhs)</code></td>
-<td style="text-align:center">self*rhs</td>
-<td>乘法</td>
-</tr>
-<tr>
-<td><code>__truediv__(self,rhs)</code></td>
-<td style="text-align:center">self/rhs</td>
-<td>除法</td>
-</tr>
-<tr>
-<td><code>__floordiv__(self,rhs)</code></td>
-<td style="text-align:center">self//rhs</td>
-<td>地板除</td>
-</tr>
-<tr>
-<td><code>__mod__(self,rhs)</code></td>
-<td style="text-align:center">self%rhs</td>
-<td>取模（求余）</td>
-</tr>
-<tr>
-<td><code>__pow__(self,rhs)</code></td>
-<td style="text-align:center">self**rhs</td>
-<td>幂rhs(right hand side)</td>
-</tr>
-<tr>
-<td><strong>右手边反向算术运算符重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__radd__(self,lhs)</code></td>
-<td style="text-align:center">lhs+self</td>
-<td>加法</td>
-</tr>
-<tr>
-<td><code>__rsub__(self,lhs)</code></td>
-<td style="text-align:center">lhs-self</td>
-<td>减法</td>
-</tr>
-<tr>
-<td><code>__rmul__(self,lhs)</code></td>
-<td style="text-align:center">lhs*self</td>
-<td>乘法</td>
-</tr>
-<tr>
-<td><code>__rtruediv__(self,lhs)</code></td>
-<td style="text-align:center">lhs/self</td>
-<td>除法</td>
-</tr>
-<tr>
-<td><code>__rfloordiv__(self,lhs)</code></td>
-<td style="text-align:center">lhs//self</td>
-<td>地板除</td>
-</tr>
-<tr>
-<td><code>__rmod__(self,lhs)</code></td>
-<td style="text-align:center">lhs%self</td>
-<td>取模（求余）</td>
-</tr>
-<tr>
-<td><code>__rpow__(self,lhs)</code></td>
-<td style="text-align:center">lhs**self</td>
-<td>幂lhs(left hand side) 右手边</td>
-</tr>
-<tr>
-<td><strong>复合赋值算术运算符重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__iadd__(self,lhs)</code></td>
-<td style="text-align:center">lhs_=self</td>
-<td>加法</td>
-</tr>
-<tr>
-<td><code>__isub__(self,lhs)</code></td>
-<td style="text-align:center">lhs-=self</td>
-<td>减法</td>
-</tr>
-<tr>
-<td><code>__imul__(self,lhs)</code></td>
-<td style="text-align:center">lhs*=self</td>
-<td>乘法</td>
-</tr>
-<tr>
-<td><code>__itruediv__(self,lhs)</code></td>
-<td style="text-align:center">lhs/=self</td>
-<td>除法</td>
-</tr>
-<tr>
-<td><code>__ifloordiv__(self,lhs)</code></td>
-<td style="text-align:center">lhs//=self</td>
-<td>地板除</td>
-</tr>
-<tr>
-<td><code>__imod__(self,lhs)</code></td>
-<td style="text-align:center">lhs%=self</td>
-<td>取模（求余）</td>
-</tr>
-<tr>
-<td><code>__ipow__(self,lhs)</code></td>
-<td style="text-align:center">lhs**=self</td>
-<td>幂优先调用</td>
-</tr>
-<tr>
-<td><strong>TypeError异常复合赋值算术运算符重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__lt__(self,rhs)</code></td>
-<td style="text-align:center">self&lt;rhs</td>
-<td>小于</td>
-</tr>
-<tr>
-<td><code>__le__(self,rhs)</code></td>
-<td style="text-align:center">self&lt;=rhs</td>
-<td>小于等于</td>
-</tr>
-<tr>
-<td><code>__gt__(self,rhs)</code></td>
-<td style="text-align:center">self&gt;rhs</td>
-<td>大于</td>
-</tr>
-<tr>
-<td><code>__ge__(self,rhs)</code></td>
-<td style="text-align:center">self&gt;=rhs</td>
-<td>大于等于</td>
-</tr>
-<tr>
-<td><code>__eq__(self,rhs)</code></td>
-<td style="text-align:center">self==rhs</td>
-<td>等于</td>
-</tr>
-<tr>
-<td><code>__ne__(self,rhs)</code></td>
-<td style="text-align:center">self!=rhs</td>
-<td>不等于</td>
-</tr>
-<tr>
-<td><strong>位运算符重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__invert__(self)</code></td>
-<td style="text-align:center">~self</td>
-<td>取反（一元运算符）</td>
-</tr>
-<tr>
-<td><code>__and__(self,rhs)</code></td>
-<td style="text-align:center">self&amp;rhs</td>
-<td>位与</td>
-</tr>
-<tr>
-<td><code>__or__(self,rhs)</code></td>
-<td style="text-align:center">self&amp;rhs</td>
-<td>位或</td>
-</tr>
-<tr>
-<td><code>__xor__(self,rhs)</code></td>
-<td style="text-align:center">self^rhs</td>
-<td>位异或</td>
-</tr>
-<tr>
-<td><code>__lshift__(self,rhs)</code></td>
-<td style="text-align:center">self&lt;&lt;rhs</td>
-<td>左移</td>
-</tr>
-<tr>
-<td><code>__rshift__(self&gt;&gt;rhs)</code></td>
-<td style="text-align:center">self&gt;&gt;rhs</td>
-<td>右移</td>
-</tr>
-<tr>
-<td><strong>反向位运算符重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__rand__(self,lhs)</code></td>
-<td style="text-align:center">lhs&amp;self</td>
-<td>位与</td>
-</tr>
-<tr>
-<td><code>__ror__(self,lhs)</code></td>
-<td style="text-align:center">lhs\</td>
-<td>self</td>
-<td>位或</td>
-</tr>
-<tr>
-<td><code>__rxor__(self,lhs)</code></td>
-<td style="text-align:center">lhs^self</td>
-<td>位 异或</td>
-</tr>
-<tr>
-<td><code>__rlshift__(self,lhs)</code></td>
-<td style="text-align:center">lhs&lt;&lt;self</td>
-<td>左移</td>
-</tr>
-<tr>
-<td><code>__rrshift__(self,lhs)</code></td>
-<td style="text-align:center">lhs&gt;&gt;self</td>
-<td>右移</td>
-</tr>
-<tr>
-<td><strong>复合赋值位运算符</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__iand__(self,rhs)</code></td>
-<td style="text-align:center">self&amp;=rhs</td>
-<td>位与</td>
-</tr>
-<tr>
-<td><code>__ior__(self,rhs)</code></td>
-<td style="text-align:center">self\</td>
-<td>=rhs</td>
-<td>位或</td>
-</tr>
-<tr>
-<td><code>__ixor__(self,rhs)</code></td>
-<td style="text-align:center">self^=rhs</td>
-<td>位异或</td>
-</tr>
-<tr>
-<td><code>__ilshift__(self,rhs)</code></td>
-<td style="text-align:center">self&lt;&lt;=rhs</td>
-<td>左移</td>
-</tr>
-<tr>
-<td><code>__irshift(self,rhs)</code></td>
-<td style="text-align:center">self&gt;&gt;=rhs</td>
-<td>右移</td>
-</tr>
-<tr>
-<td><strong>一元运算符重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__invert__(self)</code></td>
-<td style="text-align:center">~self</td>
-<td>取反（一元运算符）</td>
-</tr>
-<tr>
-<td><code>__pos__(self)</code></td>
-<td style="text-align:center">+self</td>
-<td>正号</td>
-</tr>
-<tr>
-<td><code>__neg__(self)</code></td>
-<td style="text-align:center">.self</td>
-<td>负号</td>
-</tr>
-<tr>
-<td><strong>索引和切片运算符的重载</strong></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td><code>__getitem__(self,i)</code></td>
-<td style="text-align:center">x=self</td>
-<td>索引/切片取值</td>
-</tr>
-<tr>
-<td><code>__setitem__(self,i,val)</code></td>
-<td style="text-align:center">self=val</td>
-<td>索引/切片赋值</td>
-</tr>
-<tr>
-<td><code>__delitem__(self,i)</code></td>
-<td style="text-align:center">del self</td>
-<td>删除索引/切片</td>
-</tr>
-<tr>
-<td>slice(start=None,stop=None,step=None)</td>
-<td style="text-align:center"></td>
-<td>等同于[::]切片</td>
-</tr>
-</tbody>
-</table>
+            <h2 id="协程之gevent模块-Day42"><a href="#协程之gevent模块-Day42" class="headerlink" title="协程之gevent模块-Day42"></a>协程之gevent模块-Day42</h2><h4 id="1-用法介绍"><a href="#1-用法介绍" class="headerlink" title="1. 用法介绍"></a>1. 用法介绍</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">g1=gevent.spawn(func,<span class="number">1</span>,,<span class="number">2</span>,<span class="number">3</span>,x=<span class="number">4</span>,y=<span class="number">5</span>)创建一个协程对象g1，spawn括号内第一个参数是函数名，如eat，后面可以有多个参数，可以是位置实参或关键字实参，都是传给函数eat的</span><br><span class="line"></span><br><span class="line">g2=gevent.spawn(func2)</span><br><span class="line"></span><br><span class="line">g1.join() <span class="comment">#等待g1结束</span></span><br><span class="line"></span><br><span class="line">g2.join() <span class="comment">#等待g2结束</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#或者上述两步合作一步：gevent.joinall([g1,g2])</span></span><br><span class="line"></span><br><span class="line">g1.value<span class="comment">#拿到func1的返回值</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-IO主动切换"><a href="#2-IO主动切换" class="headerlink" title="2. IO主动切换"></a>2. IO主动切换</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eat</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'开始吃饭'</span>)</span><br><span class="line">	<span class="comment"># time.sleep(2)  # gevent模块无法感知time.sleep等IO操作，只能使用自身的sleep；除非在程序最顶端引用monkey.patch_all()</span></span><br><span class="line">	gevent.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">'结束吃饭'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">play</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'开始玩耍'</span>)</span><br><span class="line">	<span class="comment"># time.sleep(2)</span></span><br><span class="line">	gevent.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">'结束玩耍'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">g1 = gevent.spawn(eat)</span><br><span class="line">g2 = gevent.spawn(play)</span><br><span class="line"></span><br><span class="line">g1.join()</span><br><span class="line">g2.join()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<h4 id="上例gevent-sleep-2-模拟的是gevent可以识别的io阻塞-而time-sleep-2-或其他的阻塞-gevent是不能直接识别的需要用下面一行代码-打补丁-就可以识别了"><a href="#上例gevent-sleep-2-模拟的是gevent可以识别的io阻塞-而time-sleep-2-或其他的阻塞-gevent是不能直接识别的需要用下面一行代码-打补丁-就可以识别了" class="headerlink" title="上例gevent.sleep(2)模拟的是gevent可以识别的io阻塞,而time.sleep(2)或其他的阻塞,gevent是不能直接识别的需要用下面一行代码,打补丁,就可以识别了"></a>上例gevent.sleep(2)模拟的是gevent可以识别的io阻塞,而time.sleep(2)或其他的阻塞,gevent是不能直接识别的需要用下面一行代码,打补丁,就可以识别了</h4><h4 id="from-gevent-import-monkey-monkey-patch-all-必须放到被打补丁者的前面，如time，socket模块之前"><a href="#from-gevent-import-monkey-monkey-patch-all-必须放到被打补丁者的前面，如time，socket模块之前" class="headerlink" title="from gevent import monkey;monkey.patch_all()必须放到被打补丁者的前面，如time，socket模块之前"></a><code>from gevent import monkey;monkey.patch_all()</code>必须放到被打补丁者的前面，如time，socket模块之前</h4><h4 id="或者我们干脆记忆成：要用gevent，需要将from-gevent-import-monkey-monkey-patch-all-放到文件的开头"><a href="#或者我们干脆记忆成：要用gevent，需要将from-gevent-import-monkey-monkey-patch-all-放到文件的开头" class="headerlink" title="或者我们干脆记忆成：要用gevent，需要将from gevent import monkey;monkey.patch_all()放到文件的开头"></a>或者我们干脆记忆成：要用gevent，需要将<code>from gevent import monkey;monkey.patch_all()</code>放到文件的开头</h4><h4 id="见下面的代码"><a href="#见下面的代码" class="headerlink" title="见下面的代码"></a>见下面的代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey;monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eat</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'开始吃饭'</span>)</span><br><span class="line">	time.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">'结束吃饭'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">play</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'开始玩耍'</span>)</span><br><span class="line">	time.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">'结束玩耍'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">g1 = gevent.spawn(eat)</span><br><span class="line">g2 = gevent.spawn(play)</span><br><span class="line"></span><br><span class="line">g1.join()</span><br><span class="line">g2.join()</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="3-gevent的同步与异步"><a href="#3-gevent的同步与异步" class="headerlink" title="3. gevent的同步与异步"></a>3. gevent的同步与异步</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2019/01/10 21:08</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey;monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span><span class="params">()</span>:</span></span><br><span class="line">	time.sleep(<span class="number">1</span>)   <span class="comment"># IO操作</span></span><br><span class="line">	print(<span class="string">'%s :hello.'</span>% time.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sync_tb</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'***同步运行任务开始***'</span>)</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">		task()</span><br><span class="line">	print(<span class="string">'***同步运行任务结束***'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">async_yb</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'***异步运行任务开始***'</span>)</span><br><span class="line">	g_lst = []</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">		g = gevent.spawn(task)</span><br><span class="line">		g_lst.append(g)</span><br><span class="line">	gevent.joinall(g_lst)</span><br><span class="line">	print(<span class="string">'***异步运行任务结束***'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sync_tb()</span><br><span class="line">async_yb()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4></blockquote>
+<p><img src="/2019/01/10/协程之gevent模块-Day42/201901102129.gif" alt="协程之gevent模块-Day42"></p>
 
           
         
@@ -2123,7 +633,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/09/10/markdown-gantt/">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/28/线程之线程池-Day41/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="渝周郎">
@@ -2142,7 +652,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/10/markdown-gantt/" itemprop="url">markdown_gantt</a></h1>
+                <a class="post-title-link" href="/2018/12/28/线程之线程池-Day41/" itemprop="url">线程之线程池-Day41</a></h1>
         
 
         <div class="post-meta">
@@ -2154,8 +664,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-10T22:01:32+08:00">
-                2018-09-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-28T21:28:02+08:00">
+                2018-12-28
               </time>
             
 
@@ -2164,6 +674,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -2186,7 +718,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  69
+                  368
                 </span>
               
 
@@ -2225,166 +757,1247 @@
       
         
           
-            <h1 id="我的第一个甘特图"><a href="#我的第一个甘特图" class="headerlink" title="我的第一个甘特图"></a>我的第一个甘特图</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">	title Python学习计划</span><br><span class="line">    dateFormat YYYY-MM-DD</span><br><span class="line">	section 语法学习</span><br><span class="line">	类型				:done, a1, 09-07, 20d</span><br><span class="line">	循环				:done, a2, after a1, 1d</span><br><span class="line">	section 对象</span><br><span class="line">	函数				:active, a3, after a2, 2d</span><br><span class="line">	类					  :a4, after a3, 2d</span><br><span class="line">	对象					  :a5, after a4,2d</span><br><span class="line">	section 网络</span><br><span class="line">	socket学习					 :a6, after a5, 3d</span><br></pre></td></tr></table></figure>
-<p><img src="/2018/09/10/markdown-gantt/QQ浏览器截图20180910220739.png" alt="QQ浏览器截图20180910220739"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/09/09/hexo修改端口/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="渝周郎">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="渝周砺行路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/09/hexo修改端口/" itemprop="url">hexo修改端口</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-09T21:37:11+08:00">
-                2018-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  103
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="hexo修改访问端口的方法"><a href="#hexo修改访问端口的方法" class="headerlink" title="hexo修改访问端口的方法"></a>hexo修改访问端口的方法</h1><blockquote>
-<p>修改端口有两种方法：</p>
+            <h2 id="线程之线程池-Day41"><a href="#线程之线程池-Day41" class="headerlink" title="线程之线程池-Day41"></a>线程之线程池-Day41</h2><blockquote>
 <ol>
-<li><p>启动运行服务时指定端口(将4000端口更改为80端口)，需要每次都要指定端口，命令如下:<br> <code>hexo s -p 80</code><br> 2、一劳永逸，直接更改js文件，操作如下：<br> 打开以下文件 <code>你博客所在目录\node_modules\hexo-server\index.js</code>后将port更改为80即可，如下图所示</p>
-<p><img src="/2018/09/09/hexo修改端口/QQ浏览器截图20180909214735.png" alt="hexo修改端口"></p>
-</li>
+<li>介绍<br>concurrent.futures模块提供了高度封装的异步调用接口<br>ThreadPoolExecutor：线程池，提供异步调用<br>ProcessPoolExecutor: 进程池，提供异步调用<br>Both implement the same interface, which is defined by the abstract Executor class.</li>
+<li>基本方法<br>#submit(fn, <em>args, **kwargs)<br>异步提交任务<br>#map(func, </em>iterables, timeout=None, chunksize=1)<br>取代for循环submit的操作<br>#shutdown(wait=True)<br>相当于进程池的pool.close()+pool.join()操作<br>wait=True，等待池内所有任务执行完毕回收完资源后才继续<br>wait=False，立即返回，并不会等待池内的任务执行完毕<br>但不管wait参数为何值，整个程序都会等到所有任务执行完毕<br>submit和map必须在shutdown之前<br>#result(timeout=None)<br>取得结果<br>#add_done_callback(fn)<br>回调函数</li>
 </ol>
 </blockquote>
+<h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2018/12/28 21:09</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># concurrent.futures模块提供了高度封装的异步调用接口</span></span><br><span class="line"><span class="comment"># ThreadPoolExecutor：线程池，提供异步调用</span></span><br><span class="line"><span class="comment"># ProcessPoolExecutor: 进程池，提供异步调用</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line">t_pool = ThreadPoolExecutor(max_workers=<span class="number">5</span>)  <span class="comment"># 同时运行5个线程,最大线程数不能超过CPU个数*5</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(n)</span>:</span></span><br><span class="line">	time.sleep(<span class="number">2</span>)</span><br><span class="line">	print(n)</span><br><span class="line">	<span class="keyword">return</span> n*n</span><br><span class="line"><span class="comment"># submit(fn, *args, **kwargs) 异步提交任务</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">t_lst = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">20</span>): <span class="comment"># 可以用 t_pool.map(func, range(20)) 取代for循环submit的操作</span></span><br><span class="line">	t = t_pool.submit(func, i)</span><br><span class="line">	t_lst.append(t)</span><br><span class="line"></span><br><span class="line">t_pool.shutdown()   <span class="comment"># shutdown(wait=True)  相当于进程池的pool.close()+pool.join()操作</span></span><br><span class="line">print(<span class="string">'主线程'</span>)</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> t_lst:</span><br><span class="line">	print(<span class="string">'-'</span>*<span class="number">10</span>, t.result())   <span class="comment"># result()获取函数结果</span></span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2018/12/28/线程之线程池-Day41/201812282129.gif" alt="线程之线程池-Day41"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/28/线程之队列-Day41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/28/线程之队列-Day41/" itemprop="url">线程之队列-Day41</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-28T20:45:02+08:00">
+                2018-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  245
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="线程之队列-Day41"><a href="#线程之队列-Day41" class="headerlink" title="线程之队列-Day41"></a>线程之队列-Day41</h2><h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2018/12/28 20:24</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> queue</span><br><span class="line"></span><br><span class="line">print(<span class="string">'*'</span>*<span class="number">10</span>, <span class="string">'以下是Queue()的代码,先进先出'</span>, <span class="string">"*"</span>*<span class="number">10</span>)</span><br><span class="line">q1 = queue.Queue()  <span class="comment"># 先进先出队列</span></span><br><span class="line">q1.put(<span class="number">1</span>)</span><br><span class="line">q1.put(<span class="number">6</span>)</span><br><span class="line">q1.put(<span class="number">3</span>)</span><br><span class="line">print(q1.get()) <span class="comment"># 第一个被取出来的是 1</span></span><br><span class="line">print(q1.get()) <span class="comment"># 第二个被取出来的是 6</span></span><br><span class="line">print(<span class="string">'*'</span>*<span class="number">10</span>, <span class="string">'以下是LifoQueue()的代码，先结后出'</span>, <span class="string">"*"</span>*<span class="number">10</span>)</span><br><span class="line">q2 = queue.LifoQueue()  <span class="comment"># 其实是栈，先进后出队列</span></span><br><span class="line">q2.put(<span class="number">10</span>)</span><br><span class="line">q2.put(<span class="number">15</span>)</span><br><span class="line">q2.put(<span class="number">20</span>)</span><br><span class="line">print(q2.get()) <span class="comment"># 第一个被取出来的是 20</span></span><br><span class="line">print(q2.get()) <span class="comment"># 第二个被取出来的是 15</span></span><br><span class="line">print(<span class="string">'*'</span>*<span class="number">10</span>, <span class="string">'以下是PriorityQueue()的代码,优先级队列'</span>, <span class="string">"*"</span>*<span class="number">10</span>)</span><br><span class="line">q3 = queue.PriorityQueue()  <span class="comment"># 优先级队列,当第一个参数相同时，按第二个参数ACSⅡ码进行排序</span></span><br><span class="line">q3.put(<span class="number">100</span>, <span class="string">'d'</span>)</span><br><span class="line">q3.put(<span class="number">150</span>, <span class="string">'a'</span>)</span><br><span class="line">q3.put(<span class="number">200</span>, <span class="string">'c'</span>)</span><br><span class="line">q3.put(<span class="number">150</span>, <span class="string">'b'</span>)</span><br><span class="line">print(q3.get()) <span class="comment"># 第一个被取出来的是 (100, 'd')</span></span><br><span class="line">print(q3.get()) <span class="comment"># 第二个被取出来的是 (150, 'a')</span></span><br><span class="line">print(q3.get()) <span class="comment"># 第三个被取出来的是 (150, 'b')</span></span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2018/12/28/线程之队列-Day41/201812282043.gif" alt="线程之队列-Day41"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/24/线程之定时器-Day41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/24/线程之定时器-Day41/" itemprop="url">线程之定时器-Day41</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-24T22:35:02+08:00">
+                2018-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  53
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="线程之定时器-Day41"><a href="#线程之定时器-Day41" class="headerlink" title="线程之定时器-Day41"></a>线程之定时器-Day41</h2><h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2018/12/24 22:11</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Timer</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">	print(<span class="string">'%s:同步时间成功！'</span>% time.ctime())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	t = Timer(<span class="number">5</span>, func).start()</span><br><span class="line">	time.sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2018/12/24/线程之定时器-Day41/201812242228.gif" alt="线程之定时器-Day41"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/24/线程之条件-Day41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/24/线程之条件-Day41/" itemprop="url">线程之条件-Day41</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-24T21:52:02+08:00">
+                2018-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  144
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="线程之条件-Day41"><a href="#线程之条件-Day41" class="headerlink" title="线程之条件-Day41"></a>线程之条件-Day41</h2><blockquote>
+<p>主要是四个函数函数的运用：<br>acquire()、release()：使用wait()和notify()的前后必须得用这两个函数<br>wait()、notify(int类型)</p>
+</blockquote>
+<h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2018/12/24 21:25</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Condition, Thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(con, i)</span>:</span></span><br><span class="line">	con.acquire()</span><br><span class="line">	con.wait()      <span class="comment"># 默认False状态会影响wait一直处于等待状态</span></span><br><span class="line">	print(<span class="string">'这是第%s个循环'</span> % i)</span><br><span class="line">	con.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">con = Condition()   <span class="comment"># Condition默认状态为False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">	Thread(target=func, args=(con, i)).start()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	msg = int(input(<span class="string">'&gt;&gt;&gt;'</span>))</span><br><span class="line">	con.acquire()</span><br><span class="line">	con.notify(msg)     <span class="comment"># notify相当于造几把钥匙</span></span><br><span class="line">	con.release()</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2018/12/24/线程之条件-Day41/201812242147.gif" alt="线程之条件-Day41"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/22/线程之事件-Day41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/22/线程之事件-Day41/" itemprop="url">线程之事件-Day41</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-22T20:20:02+08:00">
+                2018-12-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  187
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="线程之事件-Day41"><a href="#线程之事件-Day41" class="headerlink" title="线程之事件-Day41"></a>线程之事件-Day41</h2><h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, Event</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过一个检测数据库连接状态的列子说明Event是如何使用的</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_db</span><span class="params">(e)</span>:</span>    <span class="comment"># 不定时返回Event的状态为True</span></span><br><span class="line">    time.sleep(random.randint(<span class="number">0</span>,<span class="number">3</span>))</span><br><span class="line">    e.set()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">connect_db</span><span class="params">(e)</span>:</span>  <span class="comment"># 连接数据库函数</span></span><br><span class="line">    count = <span class="number">0</span>   <span class="comment"># 数据库失败连接次数</span></span><br><span class="line">    <span class="keyword">while</span> count &lt; <span class="number">3</span>:    <span class="comment"># 失败重复连接3次</span></span><br><span class="line">        e.wait(<span class="number">1</span>)    <span class="comment"># 设置等待连接时间为0.5秒</span></span><br><span class="line">        <span class="keyword">if</span> e.is_set():</span><br><span class="line">            print(<span class="string">'数据库连接成功!'</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            count +=<span class="number">1</span></span><br><span class="line">            print(<span class="string">'第%s次数据库连接失败！'</span>% count)</span><br><span class="line">    <span class="keyword">else</span>:   <span class="comment"># 超过3次连接失败，主动抛出异常错误！</span></span><br><span class="line">        <span class="keyword">raise</span> TimeoutError(<span class="string">'数据库连接超时!'</span>)</span><br><span class="line"></span><br><span class="line">event =Event()</span><br><span class="line">t1 = Thread(target=check_db, args=(event, ))</span><br><span class="line">t2 = Thread(target=connect_db, args=(event, ))</span><br><span class="line">t1.start()</span><br><span class="line">t2.start()</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2018/12/22/线程之事件-Day41/201812222018.gif" alt="线程之事件-Day41"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/22/线程之信号量-Day41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/22/线程之信号量-Day41/" itemprop="url">线程之信号量-Day41</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-22T19:21:02+08:00">
+                2018-12-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  65
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="线程之信号量-Day41"><a href="#线程之信号量-Day41" class="headerlink" title="线程之信号量-Day41"></a>线程之信号量-Day41</h2><h4 id="代码如下："><a href="#代码如下：" class="headerlink" title="代码如下："></a>代码如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, Semaphore</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(sem, a, b)</span>:</span></span><br><span class="line">    sem.acquire()</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    print(a+b)</span><br><span class="line">    sem.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sem = Semaphore(<span class="number">3</span>)      <span class="comment"># 同时运行3个线程计算</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    t = Thread(target=func, args=(sem, i, i*<span class="number">5</span>))</span><br><span class="line">    t.start()</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2018/12/22/线程之信号量-Day41/201812221921.gif" alt="线程之信号量-Day41"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/21/线程锁-Day41/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/21/线程锁-Day41/" itemprop="url">线程锁-Day41</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-21T21:33:02+08:00">
+                2018-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  738
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="线程锁（Lock：互斥锁-RLock-递归锁）-Day41"><a href="#线程锁（Lock：互斥锁-RLock-递归锁）-Day41" class="headerlink" title="线程锁（Lock：互斥锁,RLock:递归锁）-Day41"></a>线程锁（Lock：互斥锁,RLock:递归锁）-Day41</h2><blockquote>
+<p>通过科学家吃面的例子演示Lock和RLock的区别</p>
+</blockquote>
+<h4 id="1-Lock-代码演示加锁和不加锁的区别如下："><a href="#1-Lock-代码演示加锁和不加锁的区别如下：" class="headerlink" title="1. Lock()代码演示加锁和不加锁的区别如下："></a>1. Lock()代码演示加锁和不加锁的区别如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread,Lock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(lock)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> n</span><br><span class="line">    lock.acquire() <span class="comment"># 此处如果不加lock,程序运行结果是9，上锁后保证线程一个一个计算</span></span><br><span class="line">    tmp = n</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br><span class="line">    n = tmp<span class="number">-1</span></span><br><span class="line">    lock.release()</span><br><span class="line"></span><br><span class="line">n =<span class="number">10</span></span><br><span class="line"></span><br><span class="line">lock = Lock()</span><br><span class="line">t_lst =[]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    t = Thread(target=func, args=(lock, ))</span><br><span class="line">    t.start()</span><br><span class="line">    t_lst.append(t)</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> t_lst:</span><br><span class="line">    t.join()</span><br><span class="line"></span><br><span class="line">print(n)</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+<h4 id="2-Lock-代码演示科学家吃面条如下："><a href="#2-Lock-代码演示科学家吃面条如下：" class="headerlink" title="2. Lock()代码演示科学家吃面条如下："></a>2. Lock()代码演示科学家吃面条如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread,Lock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 科学家吃面条演示死锁例子</span></span><br><span class="line">lock_mt = Lock()	<span class="comment"># 加一把面条锁</span></span><br><span class="line">lock_kz = Lock()	<span class="comment"># 加一把筷子锁</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eat1</span><span class="params">(name)</span>:</span>                     <span class="comment"># 正常加锁，不会死锁</span></span><br><span class="line">    lock_mt.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到面条'</span>% name)</span><br><span class="line">    lock_kz.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到筷子'</span>% name)</span><br><span class="line">    print(<span class="string">'%s吃面啦'</span>% name)</span><br><span class="line">    lock_kz.release()</span><br><span class="line">    lock_mt.release()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eat2</span><span class="params">(name)</span>:</span>                     <span class="comment"># 加上时间延迟，会导致死锁</span></span><br><span class="line">    lock_kz.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到筷子'</span>% name)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    lock_mt.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到面条'</span>% name)</span><br><span class="line">    print(<span class="string">'%s吃面啦'</span>% name)</span><br><span class="line">    lock_mt.release()</span><br><span class="line">    lock_kz.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    Thread(target=eat1, args=(<span class="string">'王五'</span>,)).start()</span><br><span class="line">    Thread(target=eat1, args=(<span class="string">'张三'</span>,)).start()</span><br><span class="line">    Thread(target=eat2, args=(<span class="string">'李四'</span>,)).start()</span><br><span class="line">    Thread(target=eat2, args=(<span class="string">'文武'</span>,)).start()</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下-1"><a href="#运行结果如下-1" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">王五拿到面条</span><br><span class="line">王五拿到筷子</span><br><span class="line">王五吃面啦</span><br><span class="line">张三拿到面条</span><br><span class="line">张三拿到筷子</span><br><span class="line">张三吃面啦</span><br><span class="line">李四拿到筷子</span><br><span class="line">王五拿到面条</span><br><span class="line">--------------&gt;此处程序被挂起，没有结束</span><br></pre></td></tr></table></figure>
+<h4 id="3-RLock-代码演示科学家吃面条如下："><a href="#3-RLock-代码演示科学家吃面条如下：" class="headerlink" title="3. RLock()代码演示科学家吃面条如下："></a>3. RLock()代码演示科学家吃面条如下：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread,Lock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 科学家吃面条演示递归锁例子</span></span><br><span class="line">lock_mt = lock_kz = RLock()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eat1</span><span class="params">(name)</span>:</span>                     <span class="comment"># 正常加锁，不会死锁</span></span><br><span class="line">    lock_mt.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到面条'</span>% name)</span><br><span class="line">    lock_kz.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到筷子'</span>% name)</span><br><span class="line">    print(<span class="string">'%s吃面啦'</span>% name)</span><br><span class="line">    lock_kz.release()</span><br><span class="line">    lock_mt.release()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eat2</span><span class="params">(name)</span>:</span>                     <span class="comment"># 加上时间延迟，递归锁不会锁死</span></span><br><span class="line">    lock_kz.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到筷子'</span>% name)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    lock_mt.acquire()</span><br><span class="line">    print(<span class="string">'%s拿到面条'</span>% name)</span><br><span class="line">    print(<span class="string">'%s吃面啦'</span>% name)</span><br><span class="line">    lock_mt.release()</span><br><span class="line">    lock_kz.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    Thread(target=eat1, args=(<span class="string">'王五'</span>,)).start()</span><br><span class="line">    Thread(target=eat1, args=(<span class="string">'张三'</span>,)).start()</span><br><span class="line">    Thread(target=eat2, args=(<span class="string">'李四'</span>,)).start()</span><br><span class="line">    Thread(target=eat2, args=(<span class="string">'文武'</span>,)).start()</span><br></pre></td></tr></table></figure>
+<h4 id="运行结果如下-2"><a href="#运行结果如下-2" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">王五拿到面条</span><br><span class="line">王五拿到筷子</span><br><span class="line">王五吃面啦</span><br><span class="line">张三拿到面条</span><br><span class="line">张三拿到筷子</span><br><span class="line">张三吃面啦</span><br><span class="line">李四拿到筷子</span><br><span class="line">李四拿到面条</span><br><span class="line">李四吃面啦</span><br><span class="line">文武拿到筷子</span><br><span class="line">文武拿到面条</span><br><span class="line">文武吃面啦</span><br><span class="line">王五拿到面条</span><br><span class="line">王五拿到筷子</span><br><span class="line">王五吃面啦</span><br><span class="line">张三拿到面条</span><br><span class="line">张三拿到筷子</span><br><span class="line">张三吃面啦</span><br><span class="line">李四拿到筷子</span><br><span class="line">李四拿到面条</span><br><span class="line">李四吃面啦</span><br><span class="line">文武拿到筷子</span><br><span class="line">文武拿到面条</span><br><span class="line">文武吃面啦</span><br><span class="line">王五拿到面条</span><br><span class="line">王五拿到筷子</span><br><span class="line">王五吃面啦</span><br><span class="line">张三拿到面条</span><br><span class="line">张三拿到筷子</span><br><span class="line">张三吃面啦</span><br><span class="line">李四拿到筷子</span><br><span class="line">李四拿到面条</span><br><span class="line">李四吃面啦</span><br><span class="line">文武拿到筷子</span><br><span class="line">文武拿到面条</span><br><span class="line">文武吃面啦</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.139139.cn/2018/12/16/线程实现socket_server-Day40/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="渝周郎">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渝周砺行路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/16/线程实现socket_server-Day40/" itemprop="url">线程实现socket_server-Day40</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-16T22:21:19+08:00">
+                2018-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  147
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Day40-线程实现socket-server"><a href="#Day40-线程实现socket-server" class="headerlink" title="Day40  线程实现socket_server"></a>Day40  线程实现socket_server</h2><ul>
+<li><h4 id="以下是server端代码："><a href="#以下是server端代码：" class="headerlink" title="以下是server端代码："></a>以下是server端代码：</h4></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2018/12/16 21:49</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">chat</span><span class="params">(conn, addr)</span>:</span></span><br><span class="line">	print(<span class="string">'addr:'</span>, addr)</span><br><span class="line">	<span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">		msg = input(<span class="string">'&gt;&gt;&gt;'</span>).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">		conn.send(msg)</span><br><span class="line">		rev = conn.recv(<span class="number">1024</span>).decode(<span class="string">'utf-8'</span>)</span><br><span class="line">		print(<span class="string">'%s发来消息：%s'</span>%(addr, rev))</span><br><span class="line">	conn.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">	sk = socket.socket()</span><br><span class="line">	sk.bind((<span class="string">'127.0.0.1'</span>, <span class="number">4567</span>))</span><br><span class="line">	sk.listen()</span><br><span class="line">	<span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">		conn, addr = sk.accept()</span><br><span class="line"></span><br><span class="line">		Thread(target=chat, args=(conn, addr)).start()</span><br><span class="line">	sk.close()</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h4 id="以下是client端代码："><a href="#以下是client端代码：" class="headerlink" title="以下是client端代码："></a>以下是client端代码：</h4></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author : 渝周郎</span></span><br><span class="line"><span class="comment"># Time   : 2018/12/16 21:49</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">sk = socket.socket()</span><br><span class="line"></span><br><span class="line">sk.connect((<span class="string">'127.0.0.1'</span>, <span class="number">4567</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	rev = sk.recv(<span class="number">1024</span>).decode(<span class="string">'utf-8'</span>)</span><br><span class="line">	print(rev)</span><br><span class="line">	msg = input(<span class="string">'&gt;&gt;&gt;'</span>).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">	sk.send(msg)</span><br><span class="line">sk.close()</span><br></pre></td></tr></table></figure>
 
           
         
@@ -2423,6 +2036,10 @@
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -2466,7 +2083,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2488,7 +2105,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2525,7 +2142,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
