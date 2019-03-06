@@ -88,8 +88,7 @@
 <meta property="og:description" content="协程应用举例-Day421. 爬虫123456789101112131415161718192021222324252627# Author : 渝周郎# Time   : 2019/1/10 21:55from gevent import monkey;monkey.patch_all()import geventfrom urllib.request import urlopendef get">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://www.139139.cn/2019/01/10/协程应用举例-Day42/201901102221.gif">
-<meta property="og:image" content="http://www.139139.cn/2019/01/10/协程应用举例-Day42/201901102129.gif">
-<meta property="og:updated_time" content="2019-01-10T14:25:37.000Z">
+<meta property="og:updated_time" content="2019-01-11T13:57:55.567Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="协程应用举例-Day42">
 <meta name="twitter:description" content="协程应用举例-Day421. 爬虫123456789101112131415161718192021222324252627# Author : 渝周郎# Time   : 2019/1/10 21:55from gevent import monkey;monkey.patch_all()import geventfrom urllib.request import urlopendef get">
@@ -359,7 +358,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  113
+                  204
                 </span>
               
 
@@ -400,10 +399,8 @@
 <blockquote>
 <h4 id="运行结果如下"><a href="#运行结果如下" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4><p><img src="/2019/01/10/协程应用举例-Day42/201901102221.gif" alt="协程应用举例-Day42"></p>
 </blockquote>
-<h4 id="2-通过gevent实现单线程下的socket并发"><a href="#2-通过gevent实现单线程下的socket并发" class="headerlink" title="2. 通过gevent实现单线程下的socket并发"></a>2. 通过gevent实现单线程下的socket并发</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<h4 id="运行结果如下-1"><a href="#运行结果如下-1" class="headerlink" title="运行结果如下:"></a>运行结果如下:</h4></blockquote>
-<p><img src="/2019/01/10/协程应用举例-Day42/201901102129.gif" alt="协程应用举例-Day42"></p>
+<h4 id="2-通过gevent实现单线程下的socket并发"><a href="#2-通过gevent实现单线程下的socket并发" class="headerlink" title="2. 通过gevent实现单线程下的socket并发"></a>2. 通过gevent实现单线程下的socket并发</h4><h5 id="2-1-server端代码"><a href="#2-1-server端代码" class="headerlink" title="2.1  server端代码"></a>2.1  server端代码</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey;monkey.patch_all()</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> gevent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sk = socket.socket()</span><br><span class="line">sk.bind((<span class="string">'127.0.0.1'</span>, <span class="number">4567</span>))</span><br><span class="line">sk.listen()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_conn</span><span class="params">(conn)</span>:</span></span><br><span class="line">    conn.send(<span class="string">b'hello'</span>)</span><br><span class="line">    rev = conn.recv(<span class="number">1024</span>).decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    print(rev)</span><br><span class="line">    conn.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    conn, addr = sk.accept()</span><br><span class="line">    print(conn.getsockname())</span><br><span class="line">    gevent.spawn(get_conn,conn)</span><br><span class="line"></span><br><span class="line">sk.close()</span><br></pre></td></tr></table></figure>
+<h5 id="2-2-client端代码"><a href="#2-2-client端代码" class="headerlink" title="2.2 client端代码"></a>2.2 client端代码</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line">sk = socket.socket()</span><br><span class="line">sk.connect((<span class="string">'127.0.0.1'</span>, <span class="number">4567</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    rev = sk.recv(<span class="number">1024</span>).decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    print(rev)</span><br><span class="line">    msg = input(<span class="string">'&gt;&gt;&gt;'</span>).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">    sk.send(msg)</span><br><span class="line"></span><br><span class="line">sk.close()</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -443,6 +440,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/14/IO多路复用-Day42/" rel="prev" title="IO多路复用-Day42">
+                IO多路复用-Day42 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -519,7 +520,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -541,7 +542,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -574,7 +575,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#协程应用举例-Day42"><span class="nav-number">1.</span> <span class="nav-text">协程应用举例-Day42</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-爬虫"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 爬虫</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行结果如下"><span class="nav-number">1.0.2.</span> <span class="nav-text">运行结果如下:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-通过gevent实现单线程下的socket并发"><span class="nav-number">1.0.3.</span> <span class="nav-text">2. 通过gevent实现单线程下的socket并发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行结果如下-1"><span class="nav-number">1.0.4.</span> <span class="nav-text">运行结果如下:</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#协程应用举例-Day42"><span class="nav-number">1.</span> <span class="nav-text">协程应用举例-Day42</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-爬虫"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 爬虫</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行结果如下"><span class="nav-number">1.0.2.</span> <span class="nav-text">运行结果如下:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-通过gevent实现单线程下的socket并发"><span class="nav-number">1.0.3.</span> <span class="nav-text">2. 通过gevent实现单线程下的socket并发</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-server端代码"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">2.1  server端代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-client端代码"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">2.2 client端代码</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
