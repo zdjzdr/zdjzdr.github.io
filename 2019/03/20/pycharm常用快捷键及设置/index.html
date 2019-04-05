@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20160320225212834?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 <meta property="og:image" content="http://img.blog.csdn.net/20150821111753372?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 <meta property="og:image" content="http://img.blog.csdn.net/20160906161055746?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:updated_time" content="2019-03-20T13:35:14.825Z">
+<meta property="og:updated_time" content="2019-03-20T14:13:49.497Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="pycharm常用快捷键及设置">
 <meta name="twitter:description" content="pycharm常用快捷键 转自：https://www.cnblogs.com/meng-wei-zhi/p/8067570.html 1、编辑（Editing） Ctrl + Space    基本的代码完成（类、方法、属性） Ctrl + Alt + Space  快速导入任意类 Ctrl + Shift + Enter    语句完成 Ctrl + P    参数信息（在方法中调用参数） C">
@@ -362,7 +362,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.3k
+                  3.5k
                 </span>
               
 
@@ -531,7 +531,7 @@
 <p>​     快捷键：Alt + Enter: 自动添加包</p>
 <p>\2. “代码自动完成”时间延时设置</p>
 <p>  > Code Completion   -&gt; Auto code completion in (ms):0  -&gt; Autopopup in (ms):500</p>
-<p>\3. Pycharm中默认是不能用Ctrl+滚轮改变字体大小的，可以在〉Mouse中设置</p>
+<p>\3. Pycharm中默认是不能用Ctrl+滚轮改变字体大小的，可以在〉settings-&gt;Editor-&gt;General-&gt;Mouse中勾选(Change font size(Zoom)with Ctrl+Mouse Wheel)</p>
 <p>\4. 显示“行号”与“空白字符”</p>
 <p>  > Appearance  -&gt; 勾选“Show line numbers”、“Show whitespaces”、“Show method separators”</p>
 <p>\5. 设置编辑器“颜色与字体”主题</p>
@@ -577,7 +577,7 @@
 <p>File &gt; settings &gt; build.excution</p>
 <p>每次打开python控制台时自动执行代码</p>
 <p>> console &gt; pyconsole</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line"># print(&apos;Python %s on %s&apos; % (sys.version, sys.platform))</span><br><span class="line">sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])</span><br><span class="line">import  os</span><br><span class="line">print(&apos;current workdirectory : &apos;, os.getcwd() )</span><br><span class="line">import  numpy as  np</span><br><span class="line">import  scipy as sp</span><br><span class="line">import  matplotlib as mpl</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="comment"># print('Python %s on %s' % (sys.version, sys.platform))</span></span><br><span class="line">sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])</span><br><span class="line"><span class="keyword">import</span>  os</span><br><span class="line">print(<span class="string">'current workdirectory : '</span>, os.getcwd() )</span><br><span class="line"><span class="keyword">import</span>  numpy <span class="keyword">as</span>  np</span><br><span class="line"><span class="keyword">import</span>  scipy <span class="keyword">as</span> sp</span><br><span class="line"><span class="keyword">import</span>  matplotlib <span class="keyword">as</span> mpl</span><br></pre></td></tr></table></figure>
 <p>如果安装了ipython，则在pyconsole中使用更强大的ipython</p>
 <p>> console</p>
 <p>选中use ipython if available</p>
@@ -589,9 +589,23 @@
 <p>如果打开支持就会在 settings &gt; build.excution &gt; console下多显示一个django console:</p>
 <p><img src="http://img.blog.csdn.net/20160320225212834?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="img"></p>
 <p>Django console设置如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">print(&apos;Python %s on %s&apos; % (sys.version, sys.platform))</span><br><span class="line">import django</span><br><span class="line">print(&apos;Django %s&apos; % django.get_version())</span><br><span class="line">sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])</span><br><span class="line">if &apos;setup&apos; in dir(django): django.setup()</span><br><span class="line">import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">print(<span class="string">'Python %s on %s'</span> % (sys.version, sys.platform))</span><br><span class="line"><span class="keyword">import</span> django</span><br><span class="line">print(<span class="string">'Django %s'</span> % django.get_version())</span><br><span class="line">sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])</span><br><span class="line"><span class="keyword">if</span> <span class="string">'setup'</span> <span class="keyword">in</span> dir(django): django.setup()</span><br><span class="line"><span class="keyword">import</span> django_manage_shell; django_manage_shell.run(PROJECT_ROOT)</span><br></pre></td></tr></table></figure>
 <p>File &gt; settings &gt; Project : initial project</p>
 <p>project dependencies &gt; LDA &gt; project depends on these projects &gt; 选择sim_cluster就可以在LDA中调用sim_cluster中的包</p>
+<h1 id="Pycharm-设置模板默认添加作者时间等信息"><a href="#Pycharm-设置模板默认添加作者时间等信息" class="headerlink" title="Pycharm 设置模板默认添加作者时间等信息"></a>Pycharm 设置模板默认添加作者时间等信息</h1><p> 使用Pycharm过程中,每次每次新建都需要手动的编写一些项目信息或者文件信息个人信息,如果使用末班的话,很高效很多.</p>
+<ol>
+<li>打开Pycharm,选择 File &gt; Settings(Ctrl + Alt + S)</li>
+<li><p>可以使用搜索快速找到”File and Code Templates”, 右侧菜单选择”Python Script”,对模板进行编辑</p>
+<p>格式为: ${&lt;variable_name&gt;},如常用的:</p>
+</li>
+</ol>
+<p>${USER}   当前系统用户</p>
+<p>${DATE}   当前系统日期</p>
+<p>${NAME}.py  文件名称</p>
+<p>${TIME}   当前系统时间</p>
+<p>${PRODUCT_NAME}   创建文件的IDE名称</p>
+<p>示例如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># _*_coding:utf-8_*_</span></span><br><span class="line"><span class="comment"># 作者    :$&#123;USER&#125;</span></span><br><span class="line"><span class="comment"># 创建时间：$&#123;DATE&#125;$&#123;TIME&#125;</span></span><br><span class="line"><span class="comment"># 文件    ：$&#123;NAME&#125;.py</span></span><br><span class="line"><span class="comment"># IDE    ：$&#123;PRODUCT_NAME&#125;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
 <h1 id="pycharm环境和路径配置"><a href="#pycharm环境和路径配置" class="headerlink" title="pycharm环境和路径配置"></a>pycharm环境和路径配置</h1><h2 id="python解释器路径"><a href="#python解释器路径" class="headerlink" title="python解释器路径"></a>python解释器路径</h2><h3 id="python项目解释器路径"><a href="#python项目解释器路径" class="headerlink" title="python项目解释器路径"></a>python项目解释器路径</h3><p>用于配置python项目执行的python路径</p>
 <p>比如，有的项目是运行的是系统python2.7下的环境；有的是3.4；有的项目使用的是virtualenv的python环境[<a href="http://blog.csdn.net/pipisorry/article/details/47008981" target="_blank" rel="noopener">python虚拟环境配置</a> - pycharm中的项目配置]</p>
 <p>在pycharm &gt; file &gt; settings &gt; project:pythonworkspace &gt; project interpreter &gt; 选择对应项目 &gt; project interpreter中指定python解释器</p>
@@ -616,7 +630,7 @@
 <p>如果要在当前用户整个系统中都有效（包括pycharm等等IDE），就应该将系统环境变量设置在~/.profile文件中。如果是设置所有用户整个系统，修改/etc/profile或者/etc/environment吧。</p>
 <p>如SPARK_HOME的设置[<a href="http://blog.csdn.net/pipisorry/article/details/52916307" target="_blank" rel="noopener">Spark：相关错误总结 </a>]</p>
 <p>解决方法2：在代码中设置，这样不管环境有没有问题了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># spark environment settings</span><br><span class="line">import sys, os</span><br><span class="line">os.environ[&apos;SPARK_HOME&apos;] = conf.get(SECTION, &apos;SPARK_HOME&apos;)</span><br><span class="line">sys.path.append(os.path.join(conf.get(SECTION, &apos;SPARK_HOME&apos;), &apos;python&apos;))</span><br><span class="line">os.environ[&quot;PYSPARK_PYTHON&quot;] = conf.get(SECTION, &apos;PYSPARK_PYTHON&apos;)</span><br><span class="line">os.environ[&apos;SPARK_LOCAL_IP&apos;] = conf.get(SECTION, &apos;SPARK_LOCAL_IP&apos;)</span><br><span class="line">os.environ[&apos;JAVA_HOME&apos;] = conf.get(SECTION, &apos;JAVA_HOME&apos;)</span><br><span class="line">os.environ[&apos;PYTHONPATH&apos;] = &apos;$SPARK_HOME/python/lib/py4j-0.10.3-src.zip:$PYTHONPATH&apos;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># spark environment settings</span></span><br><span class="line"><span class="keyword">import</span> sys, os</span><br><span class="line">os.environ[<span class="string">'SPARK_HOME'</span>] = conf.get(SECTION, <span class="string">'SPARK_HOME'</span>)</span><br><span class="line">sys.path.append(os.path.join(conf.get(SECTION, <span class="string">'SPARK_HOME'</span>), <span class="string">'python'</span>))</span><br><span class="line">os.environ[<span class="string">"PYSPARK_PYTHON"</span>] = conf.get(SECTION, <span class="string">'PYSPARK_PYTHON'</span>)</span><br><span class="line">os.environ[<span class="string">'SPARK_LOCAL_IP'</span>] = conf.get(SECTION, <span class="string">'SPARK_LOCAL_IP'</span>)</span><br><span class="line">os.environ[<span class="string">'JAVA_HOME'</span>] = conf.get(SECTION, <span class="string">'JAVA_HOME'</span>)</span><br><span class="line">os.environ[<span class="string">'PYTHONPATH'</span>] = <span class="string">'$SPARK_HOME/python/lib/py4j-0.10.3-src.zip:$PYTHONPATH'</span></span><br></pre></td></tr></table></figure>
 <h3 id="pycharm配置第三方库代码自动提示"><a href="#pycharm配置第三方库代码自动提示" class="headerlink" title="pycharm配置第三方库代码自动提示"></a>pycharm配置第三方库代码自动提示</h3><h1 id="Pycharm实用拓展功能"><a href="#Pycharm实用拓展功能" class="headerlink" title="Pycharm实用拓展功能"></a>Pycharm实用拓展功能</h1><h2 id="pycharm中清除已编译-pyc中间文件"><a href="#pycharm中清除已编译-pyc中间文件" class="headerlink" title="pycharm中清除已编译.pyc中间文件"></a>pycharm中清除已编译.pyc中间文件</h2><p>选中你的workspace &gt; 右键 &gt; clean python compiled files</p>
 <p>还可以自己写一个清除代码</p>
 <h2 id="pycharm设置外部工具"><a href="#pycharm设置外部工具" class="headerlink" title="pycharm设置外部工具"></a>pycharm设置外部工具</h2><p>[<a href="http://blog.csdn.net/pipisorry/article/details/46754515" target="_blank" rel="noopener">python小工具 </a>]针对当前pycharm中打开的py文件对应的目录删除其中所有的pyc文件。如果是直接运行（而不是在下面的tools中运行），则删除E:\mine\python_workspace\WebSite目录下的pyc文件。</p>
@@ -675,6 +689,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/25/CSS语法-Day48/" rel="prev" title="CSS语法-Day48">
+                CSS语法-Day48 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -751,7 +769,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -773,7 +791,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -806,7 +824,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pycharm常用快捷键"><span class="nav-number">1.</span> <span class="nav-text">pycharm常用快捷键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pycharm常用设置"><span class="nav-number">2.</span> <span class="nav-text">pycharm常用设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pycharm环境和路径配置"><span class="nav-number">3.</span> <span class="nav-text">pycharm环境和路径配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#python解释器路径"><span class="nav-number">3.1.</span> <span class="nav-text">python解释器路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python项目解释器路径"><span class="nav-number">3.1.1.</span> <span class="nav-text">python项目解释器路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pycharm中进行python包管理"><span class="nav-number">3.1.2.</span> <span class="nav-text">pycharm中进行python包管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python脚本解释路径"><span class="nav-number">3.1.3.</span> <span class="nav-text">python脚本解释路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console执行路径和当前工作目录"><span class="nav-number">3.1.4.</span> <span class="nav-text">console执行路径和当前工作目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm配置os-environ环境"><span class="nav-number">3.2.</span> <span class="nav-text">pycharm配置os.environ环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pycharm配置第三方库代码自动提示"><span class="nav-number">3.2.1.</span> <span class="nav-text">pycharm配置第三方库代码自动提示</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pycharm实用拓展功能"><span class="nav-number">4.</span> <span class="nav-text">Pycharm实用拓展功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm中清除已编译-pyc中间文件"><span class="nav-number">4.1.</span> <span class="nav-text">pycharm中清除已编译.pyc中间文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm设置外部工具"><span class="nav-number">4.2.</span> <span class="nav-text">pycharm设置外部工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将上面的删除代码改成外部工具"><span class="nav-number">4.2.1.</span> <span class="nav-text">将上面的删除代码改成外部工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#之后可以通过下面的方式直接执行"><span class="nav-number">4.2.2.</span> <span class="nav-text">之后可以通过下面的方式直接执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码质量"><span class="nav-number">4.2.3.</span> <span class="nav-text">代码质量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python2转python3最快方式"><span class="nav-number">4.2.4.</span> <span class="nav-text">python2转python3最快方式</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pycharm常用快捷键"><span class="nav-number">1.</span> <span class="nav-text">pycharm常用快捷键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pycharm常用设置"><span class="nav-number">2.</span> <span class="nav-text">pycharm常用设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pycharm-设置模板默认添加作者时间等信息"><span class="nav-number">3.</span> <span class="nav-text">Pycharm 设置模板默认添加作者时间等信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pycharm环境和路径配置"><span class="nav-number">4.</span> <span class="nav-text">pycharm环境和路径配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#python解释器路径"><span class="nav-number">4.1.</span> <span class="nav-text">python解释器路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python项目解释器路径"><span class="nav-number">4.1.1.</span> <span class="nav-text">python项目解释器路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pycharm中进行python包管理"><span class="nav-number">4.1.2.</span> <span class="nav-text">pycharm中进行python包管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python脚本解释路径"><span class="nav-number">4.1.3.</span> <span class="nav-text">python脚本解释路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console执行路径和当前工作目录"><span class="nav-number">4.1.4.</span> <span class="nav-text">console执行路径和当前工作目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm配置os-environ环境"><span class="nav-number">4.2.</span> <span class="nav-text">pycharm配置os.environ环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pycharm配置第三方库代码自动提示"><span class="nav-number">4.2.1.</span> <span class="nav-text">pycharm配置第三方库代码自动提示</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pycharm实用拓展功能"><span class="nav-number">5.</span> <span class="nav-text">Pycharm实用拓展功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm中清除已编译-pyc中间文件"><span class="nav-number">5.1.</span> <span class="nav-text">pycharm中清除已编译.pyc中间文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm设置外部工具"><span class="nav-number">5.2.</span> <span class="nav-text">pycharm设置外部工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将上面的删除代码改成外部工具"><span class="nav-number">5.2.1.</span> <span class="nav-text">将上面的删除代码改成外部工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#之后可以通过下面的方式直接执行"><span class="nav-number">5.2.2.</span> <span class="nav-text">之后可以通过下面的方式直接执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码质量"><span class="nav-number">5.2.3.</span> <span class="nav-text">代码质量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python2转python3最快方式"><span class="nav-number">5.2.4.</span> <span class="nav-text">python2转python3最快方式</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
